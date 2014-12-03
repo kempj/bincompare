@@ -87,13 +87,17 @@ void analyze(vector<float> buff1, vector<float> buff2, float tolerance)
 
 int main( int argc, char **argv )
 {
-    float tolerance = -6;
+    float tol_exp = -6;
+    int tol_range = 3;
     if( argc < 3 ) {
         cout << "requires 2 files names" << endl;
         return 0;
     }
     if( argc > 3) {
-        tolerance = atoi(argv[3]);
+        tol_exp = atoi(argv[3]);
+    }
+    if( argc > 4) {
+        tol_range = atoi(argv[4]);
     }
 
     vector<float> buff1 = get_data(argv[1]);
@@ -107,7 +111,7 @@ int main( int argc, char **argv )
     }
 
     print_header();
-    for(int tol = tolerance-3; tol < tolerance+4; tol++) {
+    for(int tol = tol_exp - tol_range; tol <= tol_exp + tol_range; tol++) {
         analyze(buff1, buff2, pow(10.0, tol));
     }
     return 0;
