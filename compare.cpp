@@ -18,7 +18,7 @@ vector<float> get_data(char *filename)
     }
     file.seekg(0, ios::end );
     int num_bytes = file.tellg();
-    cout << "for " << filename << ":\nnum_bytes = " << num_bytes << endl;
+    cout << num_bytes << " = num_bytes( " << filename << " )" << endl;
     if(num_bytes % sizeof(float) != 0) {
         cout << "\nwarning, file does not evenly break into floats" << endl;
     }
@@ -29,6 +29,7 @@ vector<float> get_data(char *filename)
 
     return buffer;
 }
+
 void print_line(int N) {
     for(int i = 0; i < N; i++) 
         cout << "-";
