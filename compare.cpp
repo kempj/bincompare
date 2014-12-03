@@ -28,24 +28,39 @@ vector<float> get_data(char *filename)
     return buffer;
 }
 
-
-void analyze(vector<float> buff, float tolerance) 
+void analyze(vector<float> buff1, vector<float> buff2, float tolerance) 
 {
+    vector<float> buff3(buff1.size());
     int num_different = 0;
     float sum_difference = 0;
+    float biggest_percent = 0;
+    int biggest_diff_idx = -1;
 
-    for(int i = 0; i < buff.size(); i++) {
-        sum_difference += buff[i];
-        if(buff[i] > tolerance) {
+    for(int i = 0; i < buff1.size(); i++) {
+        buff3[i] = buff2[i] - buff1[i];
+        sum_difference += buff3[i];
+        if(buff3[i] > tolerance) {
             num_different++;
         }
+        if(buff3[i] > tolerance && buff1[i] > tolerance) {
+            float percent_diff = 100.0 *(buff3[i] / buff1[i]);
+            if(percent_diff > biggest_percent) {
+                biggest_percent = percent_diff;
+                biggest_diff_idx = i;
+            }
+        }
+    }
+    cout << endl << "tolerance = " << tolerance << endl;
+    cout << "number of non-equal elements: " << num_different
+         << " / " << buff3.size() << endl;
+    cout << "total sum of difference: " << sum_difference << endl;
+    cout << "average over all elements: " << (sum_difference / (float)buff3.size()) << endl;
+    cout << "average difference for non-equal elements: " << (sum_difference / (float)num_different) << endl;
+    cout << "biggest percent difference: " << biggest_percent << "%";
+    if(biggest_diff_idx > 0) {
+        cout << " ( " << buff1[biggest_diff_idx] << " vs " << buff2[biggest_diff_idx] << " )";
     }
     cout << endl;
-    cout << "number of non-equal elements: " << num_different
-         << " / " << buff.size() << endl;
-    cout << "total sum of difference: " << sum_difference << endl;
-    cout << "average over all elements: " << (sum_difference / (float)buff.size()) << endl;
-    cout << "average difference for non-equal elements: " << (sum_difference / (float)num_different) << endl;
 }
 
 int main( int argc, char **argv )
@@ -69,11 +84,7 @@ int main( int argc, char **argv )
         return 0;
     }
 
-    vector<float> buff3(buff1.size());
-    for(int i = 0; i < buff1.size(); i++) {
-        buff3[i] = buff2[i] - buff1[i];
-    }
-    analyze(buff3, tolerance);
+    analyze(buff1, buff2, tolerance);
 
     return 0;
 }
