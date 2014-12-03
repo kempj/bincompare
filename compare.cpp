@@ -3,51 +3,77 @@
 #include <fstream>
 #include <vector>
 #include <iterator>
+#include <cmath>
 
 using namespace std;
 
-vector<double> get_data(char* filename)
+vector<float> get_data(char *filename)
 {
+    ifstream file( filename, ios::binary );
+    if( !file.is_open()) {
+        cout << "file \"" << filename << "\" not open" << endl;
+        exit(0);
+    }
+    file.seekg(0, ios::end );
+    int num_bytes = file.tellg();
+    cout << "for " << filename << ":\nnum_bytes = " << num_bytes << endl;
+    if(num_bytes % sizeof(float) != 0) {
+        cout << "\nwarning, file does not evenly break into floats" << endl;
+    }
+    vector<float> buffer(num_bytes/sizeof(float));
 
+    file.seekg( 0, ios::beg);
+    file.read(reinterpret_cast<char *>(buffer.data()), num_bytes);
+
+    return buffer;
 }
-int main( int argc, char **argv )
+
+
+void analyze(vector<float> buff, float tolerance) 
 {
-    if( argc < 3 ) {
-        cout << "requires 2 files names, an optional data type," << endl;
-        cout << "\tand whether to store both files in memory" << endl;
-        return 0;
-    }
-    ifstream file1( argv[1], ios::binary );
-    ifstream file2( argv[2], ios::binary );
-    int data_type = 0;
-    if( argc > 3 ) {
-        data_type = atoi( argv[3] );
-    }
-    bool in_memory = true;
-    if( argc > 4 ) {
-        if( atoi( argv[3] ) == 0 ) {
-            in_memory = false;
+    int num_different = 0;
+    float sum_difference = 0;
+
+    for(int i = 0; i < buff.size(); i++) {
+        sum_difference += buff[i];
+        if(buff[i] > tolerance) {
+            num_different++;
         }
     }
-    if( !file1.is_open() || !file2.is_open()) {
-        cout << "file not open" << endl;
+    cout << endl;
+    cout << "number of non-equal elements: " << num_different
+         << " / " << buff.size() << endl;
+    cout << "total sum of difference: " << sum_difference << endl;
+    cout << "average over all elements: " << (sum_difference / (float)buff.size()) << endl;
+    cout << "average difference for non-equal elements: " << (sum_difference / (float)num_different) << endl;
+}
+
+int main( int argc, char **argv )
+{
+    float tolerance = .000001;
+    if( argc < 3 ) {
+        cout << "requires 2 files names" << endl;
         return 0;
     }
-    file1.seekg( ios::end );
-    int num_bytes1 = file1.tellg();
+    if( argc > 3) {
+        tolerance = pow(10, atoi(argv[3]));
+    }
 
-    vector<double> buff1;
-    vector<double> buff2;
+    vector<float> buff1 = get_data(argv[1]);
+    vector<float> buff2 = get_data(argv[2]);
 
-    cout << buff1.size() << endl;
-    cout << buff2.size() << endl;
+    if(buff1.size() != buff2.size()) {
+        cout << "error, files are different size: "  
+             << buff1.size() << " for file1 vs "  
+             << buff2.size() << " for file2" << endl;
+        return 0;
+    }
 
-    cout << buff1 << endl;
-    cout << buff2 << endl;
-    //for(auto element : buff1) {
-    //    cout << element << ", ";
-    //}
-    cout << endl;
+    vector<float> buff3(buff1.size());
+    for(int i = 0; i < buff1.size(); i++) {
+        buff3[i] = buff2[i] - buff1[i];
+    }
+    analyze(buff3, tolerance);
 
     return 0;
 }
