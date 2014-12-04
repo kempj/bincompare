@@ -57,14 +57,14 @@ void analyze(vector<float> buff1, vector<float> buff2, float tolerance)
     for(int i = 0; i < buff1.size(); i++) {
         float val = buff2[i] - buff1[i];
         sum_difference += val;
-        if(val > tolerance) {
+        if(abs( val) > tolerance) {
             num_different++;
-        }
-        if(val > tolerance && buff1[i] > tolerance) {
-            float percent_diff = 100.0 *(val / buff1[i]);
-            if(percent_diff > biggest_percent) {
-                biggest_percent = percent_diff;
-                biggest_diff_idx = i;
+            if( abs( buff1[i] ) > tolerance) {
+                float percent_diff = 100.0 *(val / buff1[i]);
+                if(percent_diff > biggest_percent) {
+                    biggest_percent = percent_diff;
+                    biggest_diff_idx = i;
+                }
             }
         }
     }
