@@ -58,44 +58,32 @@ void print_diff(vector<float> buff1, vector<float> buff2, float tolerance){
 void print_as_char(vector<float> buff){
     char *buffer = (char*)buff.data();
     int buffer_length = buff.size() * sizeof(float);
-    int line_len = 120;
+    int line_len = 16;
     int page_len = 20;
     int count = 0;
     int line_count = 0;
     for(int i = 0; i < buffer_length; i++) {
         if(buffer[i] >= 32 && buffer[i] <= 126) {
             cout << buffer[i];
-            count++;
-            if(count%(line_len) == 0) {
-                cout << endl;
-                count = 0;
-                line_count++;
-            }
+        } else {
+            cout << ' ';
         }
-        if(i%1000== 0) {
-            cout << endl << "i=" << i << "/" << buffer_length << "(" 
-                 << setprecision(4) << 100.0* ( i / (float)buffer_length) 
-                 << "%)" << endl;
+        count++;
+        if(count%(line_len) == 0) {
             count = 0;
-            line_count++;
-        }
-        if(line_count == page_len) {
-            line_count = 0;
-            char control = cin.get();
-            if('q' == control) {
-                break;
-            }
-            if('c' == control) {
-                line_count = page_len + 1;
-            }
-            if('g' == control) {
-                i = buffer_length - 20000;
-                count = 0;
+            cout << '|';
+            if(line_count == page_len) {
                 line_count = 0;
-                cout << endl << endl 
-                     << "-------------------------------------------------------" 
-                     << endl << endl;
+                char control = cin.get();
+                if('q' == control) {
+                break;
+                }
+                if('c' == control) {
+                    line_count = page_len + 1;
+                }
             }
+            line_count++;
+            cout << endl << setw(8) << left << i+1;
         }
     }
     cout << endl;
