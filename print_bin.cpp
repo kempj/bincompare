@@ -32,7 +32,7 @@ vector<float> get_data(char *filename)
 
 
 void print_diff(vector<float> buff1, vector<float> buff2, float tolerance){
-    cout << "printing elemnts that are different" << endl;
+    cout << "printing elemnts that differ by at least " << tolerance << endl;
     int count = 0;
     for(int i = 0; i < buff1.size(); i++) {
         float diff = buff1[i] = buff2[i];
