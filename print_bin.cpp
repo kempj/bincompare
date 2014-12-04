@@ -32,6 +32,7 @@ vector<float> get_data(char *filename)
 
 
 void print_diff(vector<float> buff1, vector<float> buff2, float tolerance){
+    cout << "printing elemnts that are different" << endl;
     int count = 0;
     for(int i = 0; i < buff1.size(); i++) {
         float diff = buff1[i] = buff2[i];
@@ -94,26 +95,28 @@ int main( int argc, char **argv )
 {
     int op = 0;
     int tol_exp = -6;
-
     if( argc < 2 || argc > 5 ) {
         cout << "requires a file and an opreation for it" << endl;
         cout << "with an optional second file and tolerance" << endl;
+        cout << "\t(file1, op, file2, tol)" << endl;
         return 0;
     }
-    if(argc < 2) {
+    if(argc > 4) {
+        tol_exp = atoi(argv[4]);
+    }
+    if(argc > 2) {
         op = atoi(argv[2]);
     }
     vector<float> buff1 = get_data(argv[1]);
 
     if(op == 0) {
         print_as_char(buff1);
-    }
-    if(argc > 4) {
-        tol_exp = atoi(argv[3]);
-    }
-
-    if(op == 1 && argc > 3) {
-        print_diff(buff1, get_data(argv[3]), pow(10,tol_exp));
+    } else {
+        if(op == 1 && argc > 3) {
+            print_diff(buff1, get_data(argv[3]), pow(10,tol_exp));
+        } else {
+            cout << "Invalid args" << endl;
+        }
     }
 
     return 0;
