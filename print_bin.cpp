@@ -37,7 +37,7 @@ void print_diff(vector<float> buff1, vector<float> buff2, float tolerance){
     for(int i = 0; i < buff1.size(); i++) {
         float diff = buff1[i] = buff2[i];
         if(abs(diff) > tolerance) {
-            cout << left << "(i=" << i << ": " << setw(12) << diff << " - " << setw(12) << buff1[i] <<  ") ";
+            cout << left << "(i=" << i << ": " << setw(12) << setw(12) << buff1[i] << " +/- " << diff <<  ") ";
             count++;
             if(count % 3 == 0) {
                 cout << endl;
